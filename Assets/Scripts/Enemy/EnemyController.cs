@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, Istunable
 {
     [SerializeField] private PlayerController playerController;
     [SerializeField] private NavMeshAgent navMeshAgent;
@@ -14,10 +14,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float chaseRange = 5f;
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private int chaseStopDuration = 3;
+    [SerializeField] private float stuntDuration = 5f;
 
     private bool isChasing;
     private bool isAttacking;
     private bool isPlayerIntimidating;
+    private bool isStunned;
 
     private void Awake()
     {
@@ -26,10 +28,15 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
-        InvokeRepeating(nameof(IsPlayerChaseInRange),0,0.5f);
-        InvokeRepeating(nameof(IsPlayerInAttackRange),0,0.5f);
-        InvokeRepeating(nameof(IsPlayerIntimidating),0,0.5f);
-        InvokeRepeating(nameof(UpdateState),0,0.5f);
+       
+    }
+
+    private void FixedUpdate()
+    {
+        IsPlayerChaseInRange();
+        IsPlayerInAttackRange();
+        IsPlayerIntimidating();
+        UpdateState();
     }
 
     private void UpdateState()
@@ -53,16 +60,16 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            StopChasingPlayer();
+            StartCoroutine(StopChasingPlayer());
             return false; 
         }
     }
 
-    private async void StopChasingPlayer()
+    private IEnumerator StopChasingPlayer()
     {
-        await Task.Delay(chaseStopDuration * 1000);
-        if(!IsPlayerChaseInRange() && !isAttacking && !isPlayerIntimidating)
-            isChasing = false;
+        yield return new WaitForSeconds(chaseStopDuration);
+         if(!IsPlayerChaseInRange() && !isAttacking && !isPlayerIntimidating)
+             isChasing = false;
     }
 
     public void IsPlayerInAttackRange()
@@ -80,11 +87,33 @@ public class EnemyController : MonoBehaviour
 
     public void IsPlayerIntimidating()
     {
+        if(!gameObject.activeInHierarchy) return;
         isPlayerIntimidating = playerController.IsIntimidating;
     }
 
     private void OnDestroy()
     {
-        CancelInvoke();
+        StopAllCoroutines();
+    }
+
+    public void OnStunned()
+    {
+        print("Boss is stunned");
+        isStunned = true;
+        OnGetStunned();
+        StartCoroutine(ResetStun());
+    }
+
+    private void OnGetStunned()
+    {
+        //navMeshAgent.isStopped = true;
+        navMeshAgent.speed = 0;
+    }
+
+    private IEnumerator ResetStun()
+    {
+        yield return new WaitForSeconds(stuntDuration);
+        isStunned = false;
+        navMeshAgent.speed = 3.5f;
     }
 }
