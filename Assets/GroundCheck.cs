@@ -8,17 +8,25 @@ public class GroundCheck : MonoBehaviour {
     public bool isGrounded = false;
 
 
-    public void OnTriggerEnter(Collider other) {
-        if (IsOnLayer(other.gameObject, groundLayer)) {
-            isGrounded = true;
-            return;
-        }
-    }
+    // public void OnTriggerEnter(Collider other) {
+    //     if (IsOnLayer(other.gameObject, groundLayer)) {
+    //         isGrounded = true;
+    //         return;
+    //     }
+    // }
 
     public void OnTriggerExit(Collider other) {
         if (IsOnLayer(other.gameObject, groundLayer)) {
             isGrounded = false;
             return;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (IsOnLayer(other.gameObject, groundLayer))
+        {
+             isGrounded = true;
         }
     }
 

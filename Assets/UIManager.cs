@@ -21,6 +21,14 @@ public class UIManager : MonoBehaviour
 
     public Image fillImage;
 
+    [SerializeField] private GameObject image;
+    [SerializeField] private GameObject gameWin;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     private void Start() {
         StartCoroutine(ReduceProgress(0.5f));
     }
@@ -44,6 +52,8 @@ public class UIManager : MonoBehaviour
         if (currentLaughAmount >= maxLaughAmount && !gameWon) {
             gameWon = true;
             OnGameWin?.Invoke();
+            gameWin.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 
@@ -55,5 +65,11 @@ public class UIManager : MonoBehaviour
         float mappedValue = toMin + (toMax - toMin) * ((clampedValue - fromMin) / (fromMax - fromMin));
 
         return mappedValue;
+    }
+
+    public void GameFailed()
+    {
+        image.SetActive(true);
+        Time.timeScale = 0;
     }
 }

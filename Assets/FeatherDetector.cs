@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class FeatherDetector : MonoBehaviour
 {
-    public LayerMask featherLayer;
     public Action OnFeatherDetected;
     public bool hasFeather;
     public Action<bool> OnFeatherUpdated;
@@ -18,25 +17,35 @@ public class FeatherDetector : MonoBehaviour
     //    }
     //}
 
-    public void Start() {
+    public void Start()
+    {
         FeatherManager.OnPlaceFeather += LooseFeather;
     }
 
-    public void LooseFeather() {
+    public void LooseFeather()
+    {
         hasFeather = false;
         OnFeatherUpdated?.Invoke(hasFeather);
     }
 
-    public void OnTriggerEnter(Collider other) {
-        if(IsOnLayer(other.gameObject, featherLayer)) {
-            Feather feather = other.gameObject.GetComponent<Feather>();
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent(out Feather feather))
+        {
             feather.Collect();
             hasFeather = true;
             OnFeatherUpdated(hasFeather);
-        } 
+        }
+        // if(IsOnLayer(other.gameObject, featherLayer)) {
+        //     Feather feather = other.gameObject.GetComponent<Feather>();
+        //     feather.Collect();
+        //     hasFeather = true;
+        //     OnFeatherUpdated(hasFeather);
+        // } 
     }
 
-    bool IsOnLayer(GameObject obj, LayerMask layer) {
+    bool IsOnLayer(GameObject obj, LayerMask layer)
+    {
         // Get the layer of the GameObject
         int objLayer = obj.layer;
 

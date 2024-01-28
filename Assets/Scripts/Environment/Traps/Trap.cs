@@ -42,6 +42,7 @@ public class Trap : MonoBehaviour
     private void ActivateTrap()
     {
         response.Invoke();
+        GetComponent<Collider>().enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -63,6 +64,7 @@ public class Trap : MonoBehaviour
         trapRB.useGravity = false;
         trapRB.velocity = Vector3.zero;
         gameObject.SetActive(true);
+        GetComponent<Collider>().enabled = false;
     }
 
     private void OnDestroy()

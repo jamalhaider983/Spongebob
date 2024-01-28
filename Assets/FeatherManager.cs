@@ -6,7 +6,7 @@ using UnityEngine;
 public class FeatherManager : MonoBehaviour {
 
     public bool featherTaken;
-    public GameObject feather;
+    public Feather feather;
     public Transform[] spawnPoints;
     public static Action OnPlaceFeather;
 
@@ -14,8 +14,7 @@ public class FeatherManager : MonoBehaviour {
 
 
     private void Start() {
-        GameObject featherObj = Instantiate(feather);
-        featherInstance = featherObj.GetComponent<Feather>();
+        featherInstance = Instantiate(feather);
         StartCoroutine(PlaceFeather(0f));
     }
 
@@ -32,7 +31,7 @@ public class FeatherManager : MonoBehaviour {
     public void RemoveFeather() {
         featherTaken = true;
         featherInstance.gameObject.SetActive(false);
-        StartCoroutine(PlaceFeather(5f));
+        StartCoroutine(PlaceFeather(10f));
     }
 
     public Vector3 GetRandomSpawnPoint() {

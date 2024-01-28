@@ -7,6 +7,7 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour, Istunable
 {
+    [SerializeField] private PlayerController[] players;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private NavMeshAgent navMeshAgent;
     [SerializeField] private Transform defaultStayTransform;
@@ -19,8 +20,10 @@ public class EnemyController : MonoBehaviour, Istunable
 
     private bool isChasing;
     private bool isAttacking;
-    private bool isPlayerIntimidating;
+    [SerializeField] private bool isPlayerIntimidating;
     private bool isStunned;
+
+    [SerializeField] private AudioClip stunnedSFX;
 
     private void Awake()
     {
@@ -31,20 +34,47 @@ public class EnemyController : MonoBehaviour, Istunable
 
     private void Start()
     {
-       
+       IntimidateEvent.Instance.AddListener(OnIntimidate);
+    }
+
+    private void OnIntimidate(PlayerTypeSO playerType)
+    {
+        print("Player Intimidate event recieved :" + playerType);
+        foreach(PlayerController player in players)
+        {
+            if(player.playerType == playerType)
+            {
+                navMeshAgent.SetDestination(player.transform.position);
+                print("Destination Set");
+                return;
+            }
+            else
+            {
+                print("Type Not matched");
+            }
+        }
     }
 
     private void FixedUpdate()
     {
-        IsPlayerChaseInRange();
+       // IsPlayerChaseInRange();
         IsPlayerInAttackRange();
-        IsPlayerIntimidating();
-        UpdateState();
+        //IsPlayerIntimidating();
+       // UpdateState();
         
     }
 
     private void LateUpdate()
     {
+        if(isStunned)
+        {
+            anim.SetBool("Stunned",true);
+        }
+        else
+        {
+
+            anim.SetBool("Stunned",false);
+        }
         if(Vector3.Distance(transform.position,navMeshAgent.destination)>0.5f)
         {
             anim.SetFloat("Speed",1);
@@ -58,14 +88,15 @@ public class EnemyController : MonoBehaviour, Istunable
 
     private void UpdateState()
     {
-        if(isChasing || isPlayerIntimidating)
-        {
-            navMeshAgent.SetDestination(playerTransform.position);
-        }
-        else if(!isAttacking)
-        {
-            navMeshAgent.SetDestination(defaultStayTransform.position);
-        }
+        // if(isChasing || isPlayerIntimidating)
+        // {
+        //     print("Chasing");
+        //     navMeshAgent.SetDestination(playerTransform.position);
+        // }
+        // else if(!isAttacking)
+        // {
+        //     navMeshAgent.SetDestination(defaultStayTransform.position);
+        // }
     }
 
     public bool IsPlayerChaseInRange()
@@ -95,10 +126,12 @@ public class EnemyController : MonoBehaviour, Istunable
         {
             isChasing = false;
             isAttacking = true;
+            anim.SetBool("Attack",true);
         }
         else
         {
             isAttacking = false;
+            anim.SetBool("Attack",false);
         }
     }
 
@@ -110,6 +143,7 @@ public class EnemyController : MonoBehaviour, Istunable
     private void OnDestroy()
     {
         StopAllCoroutines();
+        IntimidateEvent.Instance.RemoveListener(OnIntimidate);
     }
 
     public void OnStunned()
@@ -124,6 +158,7 @@ public class EnemyController : MonoBehaviour, Istunable
     {
         //navMeshAgent.isStopped = true;
         navMeshAgent.speed = 0;
+        AudioSource.PlayClipAtPoint(stunnedSFX,Camera.main.transform.position);
     }
 
     private IEnumerator ResetStun()
@@ -132,4 +167,16 @@ public class EnemyController : MonoBehaviour, Istunable
         isStunned = false;
         navMeshAgent.speed = 3.5f;
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        print(other.name);
+        if(other.CompareTag("Feather"))
+        {
+            if(isStunned)
+            UIManager.instance.AddProgress();
+        }
+    }
+
+
 }
