@@ -7,7 +7,8 @@ public class FeatherDetector : MonoBehaviour
 {
     public LayerMask featherLayer;
     public Action OnFeatherDetected;
-
+    public bool hasFeather;
+    public Action<bool> OnFeatherUpdated;
 
     //public void OnCollisionEnter(Collision collision) {
 
@@ -17,10 +18,21 @@ public class FeatherDetector : MonoBehaviour
     //    }
     //}
 
+    public void Start() {
+        FeatherManager.OnPlaceFeather += LooseFeather;
+    }
+
+    public void LooseFeather() {
+        hasFeather = false;
+        OnFeatherUpdated?.Invoke(hasFeather);
+    }
+
     public void OnTriggerEnter(Collider other) {
         if(IsOnLayer(other.gameObject, featherLayer)) {
             Feather feather = other.gameObject.GetComponent<Feather>();
             feather.Collect();
+            hasFeather = true;
+            OnFeatherUpdated(hasFeather);
         } 
     }
 
