@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private bool hasFeather;
     private int horizontalMovement;
 
+    [SerializeField] private float groundOffset=0.2f;
+
 
 
 
@@ -61,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private void GroundCheck() {
         RaycastHit hitInfo;
-        isGrounded = !Physics.SphereCast(groundCheck.position, 0.5f, transform.up * -1, out hitInfo, groundLayer);
+        isGrounded = !Physics.SphereCast(groundCheck.position, 0.5f, transform.up * groundOffset, out hitInfo, groundLayer);
     }
 
     public void OnDrawGizmos() {

@@ -14,7 +14,8 @@ public class TrapActivator : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("Collision Enter");
+        print("Collision Enter : " + other.name);
+        
         if(other.TryGetComponent(out PlayerController component))
         {
             ActivateTrap();
