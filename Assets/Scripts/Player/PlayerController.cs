@@ -16,14 +16,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer, featherLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private GameObject playerCapsule;
+    [SerializeField] private GroundCheck groundCheckScript;
+    [SerializeField] private FeatherDetector featherDetector;
+    public Animator animator;
 
+    public GameObject featherInHand;
+
+    public bool isIntimidating= false;
     private CapsuleCollider capsuleCollider;
-    private bool isGrounded = true;
+    private float yRotation;
+
     private Rigidbody rigidBody;
     private bool hasFeather;
     private int horizontalMovement;
-
-    [SerializeField] private float groundOffset=0.2f;
 
 
 
@@ -32,6 +37,11 @@ public class PlayerController : MonoBehaviour
 
 
     private void Start() {
+        featherDetector.OnFeatherUpdated = (bool value) =>
+        {
+            featherInHand.SetActive(value);
+        };
+        featherInHand.SetActive(false);
         capsuleCollider = playerCapsule.GetComponent<CapsuleCollider>();
         rigidBody = GetComponent<Rigidbody>();
     }
@@ -39,7 +49,36 @@ public class PlayerController : MonoBehaviour
     public void Update() {
         FeatherCheck();
         GroundCheck();
+        Tickle();
+        Intemediate();
         MoveHorizontal();
+    }
+
+    public void Intemediate() {
+        if (Input.GetKeyDown(KeyCode.K)) {
+            isIntimidating = true;
+            if (transform.localScale.x < 1) {
+                yRotation = 0f;
+                transform.rotation = Quaternion.Euler(transform.rotation.x, yRotation, transform.rotation.z);
+            } else {
+                yRotation = 180f;
+                transform.rotation = Quaternion.Euler(transform.rotation.x, yRotation, transform.rotation.z);
+            }
+            animator.SetBool("butShake", true);
+        }
+        if (Input.GetKeyUp(KeyCode.K)) {
+            isIntimidating = false;
+            animator.SetBool("butShake", false);
+        }
+    }
+
+    public void Tickle() {
+        if (Input.GetKeyDown(KeyCode.H)) {
+            animator.SetBool("tickle", true);
+        }
+        if (Input.GetKeyUp(KeyCode.H)) {
+            animator.SetBool("tickle", false);
+        }
     }
 
     public void FixedUpdate() {
@@ -62,8 +101,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void GroundCheck() {
-        RaycastHit hitInfo;
-        isGrounded = !Physics.SphereCast(groundCheck.position, 0.5f, transform.up * groundOffset, out hitInfo, groundLayer);
+        //RaycastHit hitInfo;
+        //isGrounded = !Physics.SphereCast(groundCheck.position, 0.5f, transform.up * -1, out hitInfo, groundLayer);
     }
 
     public void OnDrawGizmos() {
@@ -75,29 +114,54 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MoveHorizontal() {
-        rigidBody.velocity = new Vector3(0, rigidBody.velocity.y, moveSpeed * horizontalMovement * -1);
+        if (groundCheckScript.isGrounded == true) {
+            //Debug.Log(horizontalMovement);
+            rigidBody.velocity = new Vector3(0, rigidBody.velocity.y, moveSpeed * horizontalMovement * -1);
+        } else if(groundCheckScript.isGrounded == false) {
+            //Debug.Log(horizontalMovement / 2);
+            rigidBody.velocity = new Vector3(0, rigidBody.velocity.y, moveSpeed * (horizontalMovement * 0.7f) * -1);
+        }
+        if (!isIntimidating) { 
+            yRotation = -90f;
+        }
+        if (rigidBody.velocity.z > 1) {
+            transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
+            yRotation = 0f;
+        } else if (rigidBody.velocity.z < -1) {
+
+            transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
+            yRotation = 180f;
+        }
+        transform.rotation = Quaternion.Euler(transform.rotation.x, yRotation, transform.rotation.z);
+        bool animatorRunning = (rigidBody.velocity.z > 0 || rigidBody.velocity.z < 0);
+        animator.SetBool("running", animatorRunning);
     }
+
 
     public void OnJump(InputValue value) {
         jump = value.Get<float>();
         if (jump > 0) {
-            if(isGrounded)
+            if (groundCheckScript.isGrounded) { 
                 rigidBody.velocity = new Vector3(0, jump * jumpForce, rigidBody.velocity.z);
+                animator.SetTrigger("jump");
+            }
         }
     }
 
     public void OnMove(InputValue value) {
         horizontalMovement = (int)value.Get<Vector2>().x;
+        Debug.Log("OnMove " + horizontalMovement);
     }
 
-    public void OnAttack() {
-        if (hasFeather) {
-            Attack();
-        }
+    public void OnTickle(InputValue value) {
+        //Debug.Log("OnTickle");
+        //if (hasFeather) {
+        //    //animator.SetBool("tickle",);
+        //}
     }
 
-    public void Attack() {
-        Debug.Log("Attack");
+    public void OnTaunt() { 
+    
     }
 
     private void OnIntimidateInput(InputAction.CallbackContext context)
