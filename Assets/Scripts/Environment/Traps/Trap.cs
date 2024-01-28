@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,12 +9,20 @@ public class Trap : MonoBehaviour
 {
     [SerializeField] private TrapTypeSO trapType;
     [SerializeField] private UnityEvent response;
-    [SerializeField] private float trapResetTime = 10f;
+    [SerializeField] private Rigidbody trapRB;
+    [SerializeField] private int trapResetTime = 10;
 
     private Vector3 defaultPosition;
 
     private void Awake()
     {
+        if(!trapRB)
+        {
+            print("Rigidbody wasn't assigned");
+        }
+        if(TryGetComponent(out trapRB))
+        {
+        }
         defaultPosition = transform.position;
     }
 
@@ -43,15 +52,21 @@ public class Trap : MonoBehaviour
             stunable.OnStunned();
             print($"{stunable} was stunned");
         }
-        StartCoroutine(ResetTrap());
         gameObject.SetActive(false);
+        Invoke(nameof(ResetTrap),trapResetTime);
 
     }
 
-    private IEnumerator ResetTrap()
+    private void ResetTrap()
     {
-        yield return new WaitForSeconds(trapResetTime);
         transform.position = defaultPosition;
+        trapRB.useGravity = false;
+        trapRB.velocity = Vector3.zero;
         gameObject.SetActive(true);
+    }
+
+    private void OnDestroy()
+    {
+        CancelInvoke();
     }
 }

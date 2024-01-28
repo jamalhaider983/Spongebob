@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour, Istunable
     [SerializeField] private PlayerController playerController;
     [SerializeField] private NavMeshAgent navMeshAgent;
     [SerializeField] private Transform defaultStayTransform;
+    [SerializeField] private Animator anim;
     private Transform playerTransform;
     [SerializeField] private float chaseRange = 5f;
     [SerializeField] private float attackRange = 2f;
@@ -23,6 +24,8 @@ public class EnemyController : MonoBehaviour, Istunable
 
     private void Awake()
     {
+        //if(!playerController) 
+        //playerController =
         playerTransform = playerController.transform;
     }
 
@@ -37,6 +40,20 @@ public class EnemyController : MonoBehaviour, Istunable
         IsPlayerInAttackRange();
         IsPlayerIntimidating();
         UpdateState();
+        
+    }
+
+    private void LateUpdate()
+    {
+        if(Vector3.Distance(transform.position,navMeshAgent.destination)>0.5f)
+        {
+            anim.SetFloat("Speed",1);
+        }
+        else
+        {
+            anim.SetFloat("Speed",0);
+        }
+        
     }
 
     private void UpdateState()
@@ -87,7 +104,6 @@ public class EnemyController : MonoBehaviour, Istunable
 
     public void IsPlayerIntimidating()
     {
-        if(!gameObject.activeInHierarchy) return;
         isPlayerIntimidating = playerController.IsIntimidating;
     }
 
