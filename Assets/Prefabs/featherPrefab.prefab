@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5664120265953721090}
   - component: {fileID: 165507296541778860}
   - component: {fileID: -2329385023055146451}
+  - component: {fileID: 5750195425856252030}
   m_Layer: 7
   m_Name: featherPrefab
   m_TagString: Feather
@@ -118,3 +119,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 088fd5956a5617c4a8c332e415cbf5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &5750195425856252030
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348051435662705224}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d68de7a8a05e6894fbd001b0ae12acce, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

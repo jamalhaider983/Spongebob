@@ -3052,8 +3052,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 770106574625563887, guid: 387481cf9f10cf841a2b37b407adc6a4,
         type: 3}
+      propertyPath: featherObject
+      value: 
+      objectReference: {fileID: 2348051435662705224, guid: cf5da9e4c29d3ea44829cd188886523b,
+        type: 3}
+    - target: {fileID: 770106574625563887, guid: 387481cf9f10cf841a2b37b407adc6a4,
+        type: 3}
       propertyPath: spawnPoints.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 770106574625563887, guid: 387481cf9f10cf841a2b37b407adc6a4,
         type: 3}
@@ -9760,7 +9766,7 @@ PrefabInstance:
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
       propertyPath: tickleKey
-      value: 259
+      value: 258
       objectReference: {fileID: 0}
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
@@ -9776,12 +9782,12 @@ PrefabInstance:
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
       propertyPath: intimidateKey
-      value: 258
+      value: 259
       objectReference: {fileID: 0}
     - target: {fileID: 1956082474166934777, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.93
+      value: 5.411
       objectReference: {fileID: 0}
     - target: {fileID: 1956082474166934777, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
@@ -11853,7 +11859,7 @@ PrefabInstance:
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
       propertyPath: tickleKey
-      value: 104
+      value: 103
       objectReference: {fileID: 0}
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
@@ -11869,7 +11875,7 @@ PrefabInstance:
     - target: {fileID: 816232295467885301, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
       propertyPath: intimidateKey
-      value: 103
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 1956082474166934777, guid: 7cbd1947828125548b775a74e8658ea9,
         type: 3}
@@ -13271,7 +13277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13364,7 +13370,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 163.5, y: -168.6}
+  m_AnchoredPosition: {x: 100, y: -25}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2024737543
